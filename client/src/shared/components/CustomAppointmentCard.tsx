@@ -2,14 +2,14 @@ import { Colors } from '@/constants/Colors'
 import { Icon } from '@/src/shared/components/CustomIcon'
 import clsx from 'clsx'
 import React from 'react'
-import { Image, Pressable, Text, View } from 'react-native'
+import { Image, ImageSourcePropType, Pressable, Text, View } from 'react-native'
 
 interface CustomAppointmentCardProps {
     title: string
     date: string
     time: string
     doctorName: string
-    doctorImage: string
+    doctorImage: ImageSourcePropType
     doctorSpecialization: string
     status: boolean
     onPress: () => void

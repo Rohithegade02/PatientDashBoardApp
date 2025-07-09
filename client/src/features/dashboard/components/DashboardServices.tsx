@@ -2,11 +2,11 @@ import { CustomHeader } from '@/src/shared/components/CustomHeader'
 import { IMAGES } from '@/src/shared/constants'
 import clsx from 'clsx'
 import React, { HTMLProps, memo } from 'react'
-import { Image, Text, View } from 'react-native'
+import { Image, ImageSourcePropType, Text, View } from 'react-native'
 
 interface DashboardServiceCardProps {
     title: string
-    icon: React.ReactNode
+    icon: ImageSourcePropType
     titleStyle?: HTMLProps<HTMLElement>['className']
     iconStyle?: HTMLProps<HTMLElement>['className']
 }
