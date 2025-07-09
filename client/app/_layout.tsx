@@ -6,10 +6,15 @@ import '../global.css'
 
 import { useAuthStore } from '@/src/features/auth/stores/authStore'
 import { queryClient } from '@/src/shared/services/queryClient'
+import { initializeSentry } from '@/src/shared/services/sentry'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { useEffect } from 'react'
+import * as Sentry from '@sentry/react-native'
 
-export default function RootLayout() {
+// Initialize Sentry
+initializeSentry()
+
+function RootLayout() {
     const [loaded] = useFonts({
         SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
         'Lato-Thin': require('../assets/fonts/Lato-Thin.ttf'),
@@ -27,6 +32,7 @@ export default function RootLayout() {
     // Initialize auth state
     const { isAuthenticated, checkAuthStatus } = useAuthStore()
 
+    console.log('isAuthenticated', isAuthenticated)
     useEffect(() => {
         checkAuthStatus()
     }, [checkAuthStatus])
@@ -58,3 +64,6 @@ export default function RootLayout() {
         </QueryClientProvider>
     )
 }
+
+// Export the component wrapped with Sentry
+export default Sentry.wrap(RootLayout)

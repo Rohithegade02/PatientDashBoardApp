@@ -1,5 +1,6 @@
 import { STORAGE_KEYS } from '@/src/shared/constants'
 import { MMKV, Mode } from 'react-native-mmkv'
+import { User } from '../types'
 
 // Initialize MMKV storage
 const mmkvStorage = new MMKV({
@@ -138,7 +139,7 @@ export class StorageService {
         this.remove(STORAGE_KEYS.AUTH_TOKEN)
     }
 
-    public setUserData(userData: string): void {
+    public setUserData(userData: User): void {
         this.set(STORAGE_KEYS.USER_DATA, userData)
     }
 

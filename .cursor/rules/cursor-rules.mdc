@@ -1,0 +1,299 @@
+---
+alwaysApply: true
+---
+
+# PatientDashBoardApp - Expo React Native Project Rules
+
+## Project Overview
+This is an Expo React Native application with TypeScript, featuring a patient dashboard for medication management. The project uses a feature-based architecture with client-server separation.
+
+## Tech Stack
+### Frontend (Client)
+- **Framework**: Expo SDK 53 with React Native 0.79.5
+- **Language**: TypeScript
+- **Navigation**: Expo Router with file-based routing
+- **Styling**: NativeWind (TailwindCSS for React Native)
+- **State Management**: Zustand with subscribeWithSelector middleware
+- **Data Fetching**: TanStack React Query
+- **Forms**: React Hook Form with Zod validation
+- **Storage**: React Native MMKV
+- **UI Components**: Expo built-in components, custom components
+
+### Backend (Server)
+- **Runtime**: Node.js with Express
+- **Language**: TypeScript
+- **Database**: MongoDB with Mongoose
+- **Authentication**: JWT with bcryptjs
+- **Logging**: Winston
+- **API**: RESTful endpoints
+
+## Architecture & File Organization
+
+### Feature-Based Architecture
+- Organize code by features in `client/src/features/`
+- Each feature should contain: `components/`, `screens/`, `stores/`, `hooks/`, `services/`
+- Shared utilities go in `client/src/shared/`
+
+### File Structure Rules
+```
+<code_block_to_apply_changes_from>
+```
+
+### Naming Conventions
+- **Components**: PascalCase (e.g., `DashboardHeader.tsx`)
+- **Files**: PascalCase for components, camelCase for utilities
+- **Folders**: camelCase
+- **Constants**: UPPER_SNAKE_CASE
+- **Types/Interfaces**: PascalCase
+
+## TypeScript Standards
+
+### Type Definitions
+- Define interfaces in `src/shared/types/index.ts`
+- Use specific types over `any`
+- Export types from index files for clean imports
+- Use generic types for reusable components
+
+### Import/Export Patterns
+```typescript
+// Use barrel exports in index.ts files
+export * from './ComponentName'
+
+// Use absolute imports with @ alias
+import { useAuthStore } from '@/src/features/auth/stores/authStore'
+import { CustomButton } from '@/src/shared/components'
+```
+
+## React Native/Expo Best Practices
+
+### Component Structure
+```typescript
+import React from 'react'
+import { View, Text } from 'react-native'
+import { useRouter } from 'expo-router'
+
+interface ComponentProps {
+  title: string
+  onPress?: () => void
+}
+
+export const ComponentName: React.FC<ComponentProps> = ({ 
+  title, 
+  onPress 
+}) => {
+  return (
+    <View className="flex-1 bg-white">
+      <Text className="text-lg font-lato-bold">{title}</Text>
+    </View>
+  )
+}
+```
+
+### Screen Structure
+- Use Expo Router file-based routing
+- Place screens in appropriate feature folders
+- Export default from screen files
+- Use proper TypeScript typing for route params
+
+## State Management (Zustand)
+
+### Store Structure
+```typescript
+import { create } from 'zustand'
+import { subscribeWithSelector } from 'zustand/middleware'
+
+interface StoreState {
+  data: any
+  loading: boolean
+  error: string | null
+}
+
+interface StoreActions {
+  fetchData: () => Promise<void>
+  updateData: (data: any) => void
+  clearError: () => void
+}
+
+export const useStore = create<StoreState & StoreActions>()(
+  subscribeWithSelector((set, get) => ({
+    data: null,
+    loading: false,
+    error: null,
+    
+    fetchData: async () => {
+      // Implementation
+    }
+  }))
+)
+```
+
+### Store Best Practices
+- One store per feature when logical
+- Use subscribeWithSelector for reactive updates
+- Implement proper error handling
+- Keep actions focused and atomic
+
+## Styling with NativeWind
+
+### Styling Guidelines
+- Use NativeWind classes: `className="flex-1 bg-primary-500"`
+- Follow the custom color palette defined in tailwind.config.js
+- Use custom font families: `font-lato`, `font-lato-bold`, etc.
+- Responsive design with proper spacing
+
+### Color System
+```typescript
+// Use the defined color palette
+primary: 50-900 (blue shades)
+secondary: 50-900 (gray shades)  
+success: 50-900 (green shades)
+warning: 50-900 (yellow shades)
+error: 50-900 (red shades)
+```
+
+## API Integration
+
+### React Query Setup
+```typescript
+import { useQuery, useMutation } from '@tanstack/react-query'
+
+// Query hook
+export const useUserData = () => {
+  return useQuery({
+    queryKey: ['user'],
+    queryFn: fetchUserData,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  })
+}
+
+// Mutation hook
+export const useUpdateUser = () => {
+  return useMutation({
+    mutationFn: updateUserData,
+    onSuccess: () => {
+      // Invalidate related queries
+    }
+  })
+}
+```
+
+### API Service Pattern
+```typescript
+// In services/api.ts
+export const api = {
+  auth: {
+    login: (credentials: LoginData) => apiClient.post('/auth/login', credentials),
+    logout: () => apiClient.post('/auth/logout'),
+  },
+  users: {
+    getProfile: () => apiClient.get('/users/profile'),
+    updateProfile: (data: UserData) => apiClient.put('/users/profile', data),
+  }
+}
+```
+
+## Error Handling
+
+### Frontend Error Handling
+- Use try-catch in async operations
+- Implement global error boundaries
+- Store error states in Zustand stores
+- Show user-friendly error messages
+
+### Backend Error Handling
+- Use custom error classes extending Error
+- Implement centralized error middleware
+- Return consistent error response format
+- Log errors appropriately with Winston
+
+## Security Best Practices
+
+### Authentication
+- Store JWT tokens securely using MMKV
+- Implement token refresh logic
+- Clear sensitive data on logout
+- Use bcryptjs for password hashing (backend)
+
+### API Security
+- Validate all inputs with Zod schemas
+- Implement proper CORS configuration
+- Use authentication middleware for protected routes
+- Sanitize user inputs
+
+## Code Quality Standards
+
+### General Rules
+- Use ESLint configuration from expo
+- Format code consistently
+- Write descriptive variable and function names
+- Add JSDoc comments for complex functions
+- Keep functions small and focused
+
+### Component Guidelines
+- Use functional components with hooks
+- Implement proper prop types with TypeScript
+- Use React.memo for expensive components
+- Handle loading and error states
+
+### Performance
+- Use FlashList for large lists
+- Implement proper image optimization with expo-image
+- Use React Query for efficient data caching
+- Optimize bundle size with proper imports
+
+## Testing Approach
+- Write unit tests for utility functions
+- Test components with React Native Testing Library
+- Mock API calls in tests
+- Test critical user flows
+
+## Development Workflow
+- Use feature branches for development
+- Follow conventional commit messages
+- Use EAS for builds and deployments
+- Test on both iOS and Android platforms
+
+## Common Patterns
+
+### Loading States
+```typescript
+const { data, isLoading, error } = useQuery({...})
+
+if (isLoading) return <LoadingSpinner />
+if (error) return <ErrorMessage error={error} />
+```
+
+### Form Handling
+```typescript
+const form = useForm<FormData>({
+  resolver: zodResolver(schema),
+  defaultValues: {...}
+})
+```
+
+### Navigation
+```typescript
+import { useRouter } from 'expo-router'
+
+const router = useRouter()
+router.push('/dashboard')
+```
+
+## Code Review Checklist
+- [ ] TypeScript types are properly defined
+- [ ] Components follow naming conventions
+- [ ] Proper error handling implemented
+- [ ] Styling uses NativeWind classes
+- [ ] API calls use React Query
+- [ ] State management follows Zustand patterns
+- [ ] Security considerations addressed
+- [ ] Performance optimizations applied
+- [ ] Code is properly documented
+
+When working on this project, always consider the user experience, maintainability, and scalability of the code. Follow these patterns consistently to maintain code quality across the entire application.
+```
+
+Now your cursor rules are comprehensive and tailored specifically to your Expo React Native project! These rules will help maintain consistency across your codebase and guide development decisions based on the patterns and technologies you're already using.
+---
+
+    

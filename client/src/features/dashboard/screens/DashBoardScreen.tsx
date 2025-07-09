@@ -2,7 +2,7 @@ import { useAuthStore } from '@/src/features/auth/stores/authStore'
 import { useDashboardStore } from '@/src/features/dashboard/stores/dashboardStore'
 import { FlashList } from '@shopify/flash-list'
 import React, { useEffect, useMemo } from 'react'
-import { Alert, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 import {
     DashboardFooter,
     DashboardHeader,
@@ -20,21 +20,15 @@ interface DashboardItem {
 const DashboardScreen = () => {
     const { user, loading, refreshDashboard } = useDashboardStore()
 
+    console.log('user', user)
+
     const { isAuthenticated } = useAuthStore()
 
     useEffect(() => {
         if (isAuthenticated && user) {
             refreshDashboard().catch(() => {})
         }
-    }, [isAuthenticated])
-
-    const handleRefresh = async () => {
-        try {
-            await refreshDashboard()
-        } catch (error) {
-            Alert.alert('Error', 'Failed to refresh dashboard data')
-        }
-    }
+    }, [])
 
     // Create data array for FlashList
     const dashboardData: DashboardItem[] = useMemo(
@@ -126,8 +120,6 @@ const DashboardScreen = () => {
                 estimatedItemSize={200}
                 ListHeaderComponent={ListHeaderComponent}
                 ListFooterComponent={ListFooterComponent}
-                refreshing={loading}
-                onRefresh={handleRefresh}
                 className=""
             />
         </View>

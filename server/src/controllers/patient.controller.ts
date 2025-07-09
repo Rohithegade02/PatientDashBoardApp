@@ -1,38 +1,33 @@
-import { Request, Response, NextFunction } from 'express'
-import patientService from '../services/patient.service'
-import logger from '../utils/logger'
+import { Request, Response } from 'express';
+import { Patient } from '../models/patient.model';
+import { ApiError } from '../utils/apiError';
+import { AuthenticatedUser } from '../interfaces/auth.interface';
 
-class PatientController {
-    async getDashboard(req: Request, res: Response, next: NextFunction) {
-        try {
-            const patient = await patientService.getPatientDashboard(
-                req.user.id
-            )
-            res.status(200).json({
-                success: true,
-                data: patient,
-            })
-        } catch (error) {
-            logger.error(`Get dashboard error: ${error}`)
-            next(error)
-        }
-    }
+export class PatientController {
+  static async getDashboard(req: Request & { user: AuthenticatedUser }, res: Response) {
+    try {
+      const patient = await Patient.findOne({ userId: req.user.id });
+      
+      if (!patient) {
+        throw new ApiError(404, 'Medical record not found');
+      }
 
-    async updatePatient(req: Request, res: Response, next: NextFunction) {
-        try {
-            const patient = await patientService.updatePatient(
-                req.user.id,
-                req.body
-            )
-            res.status(200).json({
-                success: true,
-                data: patient,
-            })
-        } catch (error) {
-            logger.error(`Update patient error: ${error}`)
-            next(error)
-        }
+      res.json({
+        success: true,
+        data: patient
+      });
+    } catch (error) {
+      if (error instanceof ApiError) {
+        res.status(error.statusCode).json({
+          success: false,
+          message: error.message
+        });
+      } else {
+        res.status(500).json({
+          success: false,
+          message: 'Internal server error'
+        });
+      }
     }
+  }
 }
-
-export default new PatientController()

@@ -1,14 +1,21 @@
-import { Document } from 'mongoose'
+import { Document } from 'mongoose';
+import { UserRole } from '../constants/role';
 
-export interface IUser {
-    email: string
-    password: string
-}
+export interface IUser extends Document {
+  email: string;
+  password: string;
+  fullName: string;
+  dateOfBirth?: Date;
+  phone?: string;
+  role: UserRole;
+  createdAt: Date;
+  comparePassword(candidatePassword: string): Promise<boolean>;
+}   
 
-export interface IUserDocument extends IUser, Document {
-    comparePassword(candidatePassword: string): Promise<boolean>
-}
-
+export interface AuthenticatedUser {
+    id: string;
+    role: string;
+  }
 // Extend Express Request type to include user property
 declare global {
     namespace Express {

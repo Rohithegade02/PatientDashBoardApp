@@ -1,100 +1,114 @@
 import { useAuthStore } from '@/features/auth/stores/authStore'
-import { DashboardState, User } from '@/src/shared/types'
+import { DashboardState } from '@/src/shared/types'
 import { create } from 'zustand'
+import { subscribeWithSelector } from 'zustand/middleware'
+import { dashboardService } from '../services/dashboard'
 
 interface DashboardStore extends DashboardState {
     // Actions
+    fetchDashboard: () => Promise<void>
     refreshDashboard: () => Promise<void>
-    updatePatientInfo: (updates: Partial<User>) => void
     clearError: () => void
     setLoading: (loading: boolean) => void
 }
 
-export const useDashboardStore = create<DashboardStore>()((set, get) => ({
-    // Initial state
-    user: null,
-    loading: false,
-    error: null,
-    lastUpdated: null,
+export const useDashboardStore = create<DashboardStore>()(
+    subscribeWithSelector((set, get) => ({
+        // Initial state
+        user: null,
+        loading: false,
+        error: null,
+        lastUpdated: null,
 
-    // Actions
-    refreshDashboard: async () => {
-        set({ loading: true, error: null })
+        // Actions
+        fetchDashboard: async () => {
+            const state = get()
+            if (state.loading) return
 
-        try {
-            const authState = useAuthStore.getState()
-            if (!authState.isAuthenticated || !authState.user) {
-                throw new Error('User not authenticated')
+            set({ loading: true, error: null })
+
+            try {
+                const authState = useAuthStore.getState()
+                if (!authState.isAuthenticated) {
+                    throw new Error('User not authenticated')
+                }
+
+                const response = await dashboardService.getDashboard()
+
+                if (!response.success || !response.data) {
+                    throw new Error(
+                        response.message || 'Failed to fetch dashboard data'
+                    )
+                }
+
+                const dashboardData = response.data
+                const transformedUser = {
+                    _id: dashboardData.userId,
+                    email: authState.user || '',
+                    fullName: '',
+                    role: 'patient' as const,
+                    phone: '',
+                    dateOfBirth: '',
+                    createdAt: dashboardData.createdAt,
+                    __v: 0,
+                    patientId: dashboardData.patientId,
+                    currentPlan: dashboardData.currentPlan,
+                    nextDeliveryDate: dashboardData.nextDeliveryDate,
+                    remainingMedication: dashboardData.remainingMedication,
+                    updatedAt: dashboardData.updatedAt,
+                }
+
+                set({
+                    user: transformedUser,
+                    loading: false,
+                    error: null,
+                    lastUpdated: new Date().toISOString(),
+                })
+            } catch (error) {
+                console.error('Dashboard fetch error:', error)
+                set({
+                    loading: false,
+                    error:
+                        error instanceof Error
+                            ? error.message
+                            : 'Failed to fetch dashboard data',
+                })
+                throw error
             }
-            console.log('authState', authState)
-            // Mock API call to refresh dashboard data
-            await new Promise((resolve) => setTimeout(resolve, 1000))
+        },
 
-            // Simulate updated user data
-            const updatedUser: User = {
-                ...authState.user,
-                nextDeliveryDate: '2024-02-20', // Updated delivery date
-                remainingMedication: authState.user.remainingMedication - 1, // Simulate medication usage
-                updatedAt: new Date().toISOString(),
-            }
+        refreshDashboard: async () => {
+            await get().fetchDashboard()
+        },
 
-            // Update auth store with new user data
-            useAuthStore.getState().updateUser(updatedUser)
+        clearError: () => {
+            set({ error: null })
+        },
 
-            set({
-                user: updatedUser,
+        setLoading: (loading: boolean) => {
+            set({ loading })
+        },
+    }))
+)
+
+// Subscribe to auth state changes
+useAuthStore.subscribe(
+    (state) => state.isAuthenticated,
+    (isAuthenticated) => {
+        if (isAuthenticated) {
+            useDashboardStore
+                .getState()
+                .fetchDashboard()
+                .catch(() => {
+                    // Handle error silently or log
+                })
+        } else {
+            useDashboardStore.setState({
+                user: null,
                 loading: false,
                 error: null,
-                lastUpdated: new Date().toISOString(),
+                lastUpdated: null,
             })
-        } catch (error) {
-            set({
-                loading: false,
-                error:
-                    error instanceof Error
-                        ? error.message
-                        : 'Failed to refresh dashboard',
-            })
-            throw error
         }
-    },
-
-    updatePatientInfo: (updates: Partial<User>) => {
-        const currentUser = get().user
-        if (!currentUser) {
-            set({ error: 'No user data available' })
-            return
-        }
-
-        const updatedUser: User = {
-            ...currentUser,
-            ...updates,
-            updatedAt: new Date().toISOString(),
-        }
-
-        // Update auth store with new user data
-        useAuthStore.getState().updateUser(updatedUser)
-
-        set({
-            user: updatedUser,
-            lastUpdated: new Date().toISOString(),
-        })
-    },
-
-    clearError: () => {
-        set({ error: null })
-    },
-
-    setLoading: (loading: boolean) => {
-        set({ loading })
-    },
-}))
-
-// Subscribe to auth state changes to sync dashboard data
-useAuthStore.subscribe(
-    (state) => state.user,
-    (user) => {
-        useDashboardStore.getState().user !== user &&
-            useDashboardStore.setState({ user })
     }
 )

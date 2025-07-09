@@ -1,14 +1,15 @@
-import { Document } from 'mongoose'
+import mongoose, { Document } from 'mongoose';
+import { IUser } from './auth.interface';
 
-export interface IPatient {
-    userId: string
-    fullName: string
-    patientId: string
-    currentPlan: string
-    nextDeliveryDate: Date
-    remainingMedication: number
-    status: 'active' | 'inactive'
-    billingStatus: 'ok' | 'pending' | 'overdue'
+export interface IPatientMedical extends IUser, Document {
+    userId: mongoose.Types.ObjectId;
+  patientId: string;
+  currentPlan: string;
+  nextDeliveryDate: Date;
+  remainingMedication: number;
+  status: 'active' | 'inactive';
+  billingStatus: 'ok' | 'pending' | 'overdue';
+  createdBy: string;
+  updatedAt: Date;
 }
 
-export interface IPatientDocument extends IPatient, Document {}

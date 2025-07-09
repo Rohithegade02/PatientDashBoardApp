@@ -16,7 +16,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     fullName,
     plan,
 }) => {
-    if (!fullName || typeof fullName !== 'string') return null // Add type check
+    console.log('fullName', fullName)
+    if (!fullName || typeof fullName !== 'string') return null
     return (
         <React.Fragment>
             {/* Header */}

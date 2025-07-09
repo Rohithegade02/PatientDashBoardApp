@@ -1,14 +1,15 @@
 import { storage } from '@/src/shared/services/storage'
-import { AuthState, LoginCredentials } from '@/src/shared/types'
+import { AuthState, LoginCredentials, User } from '@/src/shared/types'
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
+import * as Sentry from '@sentry/react-native'
 
 interface AuthStore extends AuthState {
     // Actions
     login: (credentials: LoginCredentials) => Promise<void>
     logout: () => void
     checkAuthStatus: () => void
-    updateUser: (user: string) => void
+    updateUser: (user: User) => void
     clearError: () => void
     setLoading: (loading: boolean) => void
 }
@@ -26,17 +27,26 @@ export const useAuthStore = create<AuthStore>()(
             set({ loading: true, error: null })
 
             try {
+                console.log('credentials', credentials)
                 // Store auth data
-                storage.setAuthToken(credentials.data.token)
-                storage.setUserData(credentials.data.user.email)
+                storage.setAuthToken(credentials.token)
+                storage.setUserData(credentials.user)
+
+                // Set user context for Sentry
+                Sentry.setUser({
+                    email: credentials.user.email,
+                })
 
                 set({
                     isAuthenticated: true,
-                    user: credentials.data.user.email,
+                    user: credentials.user.email,
                     loading: false,
                     error: null,
                 })
             } catch (error) {
+                console.error('Login error:', error)
+                Sentry.captureException(error)
+
                 set({
                     loading: false,
                     error:
@@ -50,6 +60,7 @@ export const useAuthStore = create<AuthStore>()(
 
         logout: () => {
             storage.clearAuthData()
+            Sentry.setUser(null) // Clear user context
             set({
                 isAuthenticated: false,
                 user: null,
@@ -60,12 +71,17 @@ export const useAuthStore = create<AuthStore>()(
 
         checkAuthStatus: () => {
             const token = storage.getAuthToken()
-            const userData = storage.get<string>('user')
+            const userData = storage.getUserData()
 
             if (token && userData) {
+                // Set user context for Sentry
+                Sentry.setUser({
+                    email: userData.email as string,
+                })
+
                 set({
                     isAuthenticated: true,
-                    user: userData,
+                    user: userData.email as string,
                     loading: false,
                     error: null,
                 })
@@ -79,9 +95,9 @@ export const useAuthStore = create<AuthStore>()(
             }
         },
 
-        updateUser: (user: string) => {
+        updateUser: (user: User) => {
             storage.setUserData(user)
-            set({ user })
+            set({ user: user.email as string })
         },
 
         clearError: () => {

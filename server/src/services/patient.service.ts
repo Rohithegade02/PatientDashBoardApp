@@ -46,6 +46,16 @@ class PatientService {
             throw error
         }
     }
+
+    async createPatientsInBulk(patientsData: IPatient[]): Promise<IPatientDocument[]> {
+        try {
+            const patients = await Patient.insertMany(patientsData)
+            return patients.map(patient => patient.toObject()) as IPatientDocument[]
+        } catch (error) {
+            logger.error(`Error creating patients in bulk: ${error}`)
+            throw error
+        }
+    }
 }
 
 export default new PatientService()

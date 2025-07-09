@@ -5,6 +5,7 @@ import authRoutes from './routes/auth.route'
 import patientRoutes from './routes/patient.route'
 import { errorHandler } from './middlewares/error.middleware'
 import logger from './utils/logger'
+import adminRoutes from './routes/admin.routes'
 
 const app = express()
 
@@ -17,8 +18,9 @@ app.use(express.json())
 app.use(morgan('dev'))
 
 // Routes
-app.use('/api/auth', authRoutes)
-app.use('/api/patients', patientRoutes)
+app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/patient', patientRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

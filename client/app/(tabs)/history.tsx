@@ -1,12 +1,3 @@
-import React from 'react'
-import { Text, View } from 'react-native'
+import HistoryScreen from '@/features/history/screens/HistoryScreen'
 
-const History = () => {
-  return (
-    <View>
-      <Text>History</Text>
-    </View>
-  )
-}
-
-export default History
+export default HistoryScreen

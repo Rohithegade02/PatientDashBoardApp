@@ -1,27 +1,19 @@
 export interface User {
-    id: string
+    __v: number
+    _id: string
+    createdAt: string
+    dateOfBirth: string
     email: string
     fullName: string
-    patientId: string
-    currentPlan: string
-    nextDeliveryDate: string
-    remainingMedication: number
-    status: 'active' | 'inactive'
-    billingStatus: 'ok' | 'issues' | 'pending'
-    createdAt: string
-    updatedAt: string
+    phone: string
+    role: 'patient' | 'admin'
 }
 
 export interface LoginCredentials {
     success: boolean
-    data: {
-        token: string
-        user: {
-            email: string
-        }
-    }
+    token: string
+    user: User
 }
-
 export interface Shipment {
     id: string
     patientId: string

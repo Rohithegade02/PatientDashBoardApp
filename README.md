@@ -321,11 +321,8 @@ npm run reset-project # Reset to clean state
 - Follow React hooks best practices
 - Use absolute imports for cleaner code
 
-## 📝 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🙏 Acknowledgments
 
 - **Expo Team**: For the excellent development platform
 - **NativeWind**: For Tailwind CSS in React Native
@@ -334,6 +331,11 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - **React Hook Form**: For form handling
 - **MMKV**: For efficient storage
 
----
 
-**Built with ❤️ using React Native and Expo**
+
+<!-- SERVER -->
+
+## 🛡️ Roles
+
+- **PATIENT**: Self-registers, views and manages their own data
+- **ADMIN**: Creates and manages patient medical records
