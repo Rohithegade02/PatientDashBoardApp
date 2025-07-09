@@ -27,7 +27,7 @@ const CustomAppointmentCard = ({
     return (
         <Pressable
             onPress={onPress}
-            className="bg-white rounded-lg gap-1 shadow-lg p-6 relative"
+            className="bg-white rounded-lg gap-1 shadow-md p-6 relative"
         >
             <View className="h-[130%] bg-blue-600 w-[4px] absolute top-0 left-0 rounded-l-lg" />
             <View className="flex-row items-center justify-between">

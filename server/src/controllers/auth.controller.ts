@@ -20,10 +20,12 @@ class AuthController {
     async login(req: Request, res: Response, next: NextFunction) {
         try {
             const { email, password } = req.body
+            console.log('email backend', email)
+            console.log('password backend', password)
             const token = await authService.loginUser(email, password)
             res.status(200).json({
                 success: true,
-                data: { token },
+                data: { token, user: { email } },
             })
         } catch (error) {
             logger.error(`Login error: ${error}`)

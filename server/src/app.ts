@@ -9,7 +9,10 @@ import logger from './utils/logger'
 const app = express()
 
 // Middlewares
-app.use(cors())
+app.use(cors({
+    origin: ['http://localhost:19006', 'http://10.0.2.2:19006'], // Add emulator IP
+    credentials: true,
+}));
 app.use(express.json())
 app.use(morgan('dev'))
 

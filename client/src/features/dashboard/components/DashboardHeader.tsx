@@ -16,6 +16,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
     fullName,
     plan,
 }) => {
+    if (!fullName || typeof fullName !== 'string') return null // Add type check
     return (
         <React.Fragment>
             {/* Header */}
@@ -50,7 +51,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     <Text className="text-xl text-gray-500 font-lato uppercase text-center">
                         Welcome back !
                     </Text>
-                    <Text className="text-3xl  font-lato-bold text-uppercase mt-1 text-center">
+                    <Text className="text-2xl  font-lato-bold text-uppercase mt-1 text-center">
                         {fullName}
                     </Text>
                 </View>

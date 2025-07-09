@@ -9,23 +9,17 @@ import {
     DashboardInfoCard,
     DashboardServices,
     DeliveryInfoCard,
-    QuickActionsCard,
     StatusSummaryCard,
 } from '../components'
 
 interface DashboardItem {
     id: string
-    type:
-        | 'patient-info'
-        | 'services'
-        | 'delivery-info'
-        | 'status-summary'
-        | 'quick-actions'
+    type: 'patient-info' | 'services' | 'delivery-info' | 'status-summary'
 }
 
 const DashboardScreen = () => {
-    const { user, loading, error, refreshDashboard, clearError } =
-        useDashboardStore()
+    const { user, loading, refreshDashboard } = useDashboardStore()
+
     const { isAuthenticated } = useAuthStore()
 
     useEffect(() => {
@@ -42,10 +36,6 @@ const DashboardScreen = () => {
         }
     }
 
-    const handleContactSupport = () => {
-        Alert.alert('Contact Support', 'Feature coming soon!')
-    }
-
     // Create data array for FlashList
     const dashboardData: DashboardItem[] = useMemo(
         () => [
@@ -53,7 +43,6 @@ const DashboardScreen = () => {
             { id: 'services', type: 'services' },
             { id: 'delivery-info', type: 'delivery-info' },
             { id: 'status-summary', type: 'status-summary' },
-            { id: 'quick-actions', type: 'quick-actions' },
         ],
         []
     )
@@ -83,7 +72,7 @@ const DashboardScreen = () => {
                                 valueStyle: 'text-blue-600 font-semibold',
                             },
                         ]}
-                        containerStyle={{}}
+                        containerStyle=""
                     />
                 )
             case 'services':
@@ -102,14 +91,7 @@ const DashboardScreen = () => {
                         billingStatus={user.billingStatus}
                     />
                 )
-            case 'quick-actions':
-                return (
-                    <QuickActionsCard
-                        onRefresh={handleRefresh}
-                        loading={loading}
-                        onContactSupport={handleContactSupport}
-                    />
-                )
+
             default:
                 return null
         }
@@ -117,7 +99,7 @@ const DashboardScreen = () => {
 
     const ListHeaderComponent = () => {
         if (!user) return null
-        return <DashboardHeader fullName={user.fullName} plan="PRO" />
+        return <DashboardHeader fullName={user as any} plan="PRO" />
     }
 
     const ListFooterComponent = () => {

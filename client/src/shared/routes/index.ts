@@ -1,11 +1,11 @@
 export const ROUTES = {
     AUTH: {
-      LOGIN: 'Login',
-      REGISTER: 'Register',
+        LOGIN: '(public)/login',
+        REGISTER: '(public)/register',
     },
     MAIN: {
-      DASHBOARD: 'Dashboard',
-      HISTORY: 'History',
-      SETTINGS: 'Settings',
+        DASHBOARD: '(tabs)/dashboard',
+        HISTORY: '(tabs)/history',
+        SETTINGS: '(tabs)/settings',
     },
-  } as const;
+} as any

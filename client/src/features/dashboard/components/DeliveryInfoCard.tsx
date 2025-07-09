@@ -1,6 +1,7 @@
 import CustomAppointmentCard from '@/src/shared/components/CustomAppointmentCard'
-import CustomHeader from '@/src/shared/components/CustomHeader'
+import { CustomHeader } from '@/src/shared/components/CustomHeader'
 import { IMAGES } from '@/src/shared/constants'
+import { formatDate } from '@/src/shared/hooks'
 import React from 'react'
 import { View } from 'react-native'
 
@@ -13,26 +14,6 @@ export const DeliveryInfoCard: React.FC<DeliveryInfoCardProps> = ({
     nextDeliveryDate,
     remainingMedication,
 }) => {
-    const formatDate = (dateString: string) => {
-        try {
-            const date = new Date(dateString)
-            return date.toLocaleDateString('en-US', {
-                weekday: 'short',
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-            })
-        } catch {
-            return dateString
-        }
-    }
-
-    const getMedicationStatusColor = (remaining: number) => {
-        if (remaining <= 5) return 'text-red-600'
-        if (remaining <= 10) return 'text-yellow-600'
-        return 'text-green-600'
-    }
-
     return (
         <View className="bg-white mx-6 my-4 gap-4">
             <CustomHeader
