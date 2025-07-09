@@ -7,6 +7,10 @@ export interface User {
     fullName: string
     phone: string
     role: 'patient' | 'admin'
+    currentPlan: 'Basic' | 'Premium'
+    nextDeliveryDate: string
+    remainingMedication: number
+    updatedAt: string
 }
 
 export interface LoginCredentials {
@@ -15,16 +19,12 @@ export interface LoginCredentials {
     user: User
 }
 export interface Shipment {
-    id: string
-    patientId: string
+    _id: string
+    userId: string
     date: string
+    medicationName: string
     status: 'delivered' | 'shipped' | 'pending' | 'cancelled'
     quantity: number
-    medication: string
-    trackingNumber?: string
-    deliveryAddress: string
-    createdAt: string
-    updatedAt: string
 }
 
 export interface ApiResponse<T> {

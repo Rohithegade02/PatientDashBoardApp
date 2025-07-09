@@ -13,7 +13,7 @@ interface DashboardServiceCardProps {
 
 export const DashboardServices = memo(() => {
     return (
-        <View className="bg-white mx-5">
+        <View className="bg-white mt-44 mx-5">
             <CustomHeader
                 leftText="Explore Services"
                 leftTextStyle="font-lato-bold text-2xl"

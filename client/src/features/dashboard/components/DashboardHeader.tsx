@@ -2,34 +2,32 @@ import { Colors } from '@/constants/Colors'
 import { Icon } from '@/src/shared/components'
 import { CustomButton } from '@/src/shared/components/CustomButton'
 import { IMAGES } from '@/src/shared/constants'
+import { User } from '@/src/shared/types'
 import FastImage from '@d11/react-native-fast-image'
 import clsx from 'clsx'
 import React from 'react'
-import { Text, View } from 'react-native'
+import { ImageSourcePropType, Text, View } from 'react-native'
 
 interface DashboardHeaderProps {
-    fullName: string
-    plan: 'PRO' | 'BASIC'
+    userData: User
 }
 // TODO: add the name fetched from the backend
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
-    fullName,
-    plan,
+    userData,
 }) => {
-    console.log('fullName', fullName)
-    if (!fullName || typeof fullName !== 'string') return null
+    console.log('fullName', userData)
+    const plan = userData?.currentPlan?.toLowerCase()
     return (
         <React.Fragment>
             {/* Header */}
             <View className="bg-blue-600 h-52 ">
                 <View className="flex-row items-center  justify-between p-6">
                     <FastImage
-                        source={IMAGES.DOCTOR_SECOND}
+                        source={IMAGES.DOCTOR_SECOND as any}
                         style={{
                             width: 48,
                             height: 48,
                             borderRadius: 100,
-                            resizeMode: 'contain',
                         }}
                     />
                     <Text
@@ -37,13 +35,13 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                             'font-lato px-3 py-1 rounded-full text-sm',
                             {
                                 'bg-green-100 text-green-800 border border-green-300':
-                                    plan === 'PRO',
+                                    plan === 'premium',
                                 'bg-red-100 text-red-400 border border-red-300':
-                                    plan === 'BASIC',
+                                    plan === 'basic',
                             }
                         )}
                     >
-                        {plan}
+                        {plan.charAt(0).toUpperCase() + plan.slice(1)}
                     </Text>
                 </View>
             </View>
@@ -53,7 +51,8 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                         Welcome back !
                     </Text>
                     <Text className="text-2xl  font-lato-bold text-uppercase mt-1 text-center">
-                        {fullName}
+                        {userData?.fullName ||
+                            userData?.email?.split('@')[0].toUpperCase()}
                     </Text>
                 </View>
                 <Text className="text-gray-500 font-lato-bold mt-16 text-center">

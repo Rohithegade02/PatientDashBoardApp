@@ -12,6 +12,7 @@ interface CustomAppointmentCardProps {
     doctorImage: ImageSourcePropType
     doctorSpecialization: string
     status: boolean
+    remainingMedication: number
     onPress: () => void
 }
 const CustomAppointmentCard = ({
@@ -22,6 +23,7 @@ const CustomAppointmentCard = ({
     doctorImage,
     doctorSpecialization,
     status,
+    remainingMedication,
     onPress,
 }: CustomAppointmentCardProps) => {
     return (
@@ -78,6 +80,9 @@ const CustomAppointmentCard = ({
                         {status ? 'Payment Completed' : 'Payment Pending'}
                     </Text>
                 </View>
+                <Text className="text-base font-lato-bold text-gray-400">
+                    {remainingMedication} Medications left
+                </Text>
             </View>
         </Pressable>
     )

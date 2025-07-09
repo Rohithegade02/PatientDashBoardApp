@@ -33,7 +33,6 @@ const DashboardScreen = () => {
     // Create data array for FlashList
     const dashboardData: DashboardItem[] = useMemo(
         () => [
-            { id: 'patient-info', type: 'patient-info' },
             { id: 'services', type: 'services' },
             { id: 'delivery-info', type: 'delivery-info' },
             { id: 'status-summary', type: 'status-summary' },
@@ -45,30 +44,6 @@ const DashboardScreen = () => {
         if (!user) return null
 
         switch (item.type) {
-            case 'patient-info':
-                return (
-                    <DashboardInfoCard
-                        title="Patient Details"
-                        items={[
-                            {
-                                label: 'Full Name',
-                                value: 'John Doe',
-                                valueStyle: 'font-lato-bold',
-                            },
-                            {
-                                label: 'Patient ID',
-                                value: 'PID-12345',
-                                valueStyle: 'font-mono text-sm',
-                            },
-                            {
-                                label: 'Current Plan',
-                                value: 'Premium',
-                                valueStyle: 'text-blue-600 font-semibold',
-                            },
-                        ]}
-                        containerStyle=""
-                    />
-                )
             case 'services':
                 return <DashboardServices />
             case 'delivery-info':
@@ -76,13 +51,6 @@ const DashboardScreen = () => {
                     <DeliveryInfoCard
                         nextDeliveryDate={user.nextDeliveryDate}
                         remainingMedication={user.remainingMedication}
-                    />
-                )
-            case 'status-summary':
-                return (
-                    <StatusSummaryCard
-                        status={user.status}
-                        billingStatus={user.billingStatus}
                     />
                 )
 
@@ -93,7 +61,7 @@ const DashboardScreen = () => {
 
     const ListHeaderComponent = () => {
         if (!user) return null
-        return <DashboardHeader fullName={user as any} plan="PRO" />
+        return <DashboardHeader userData={user} />
     }
 
     const ListFooterComponent = () => {

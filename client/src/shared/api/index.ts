@@ -8,3 +8,7 @@ export const AUTH_API = {
 export const DASHBOARD_API = {
     GET_DASHBOARD: `${API_CONFIG.BASE_URL}/api/patient/dashboard`,
 }
+
+export const SHIPMENT_API = {
+    GET_SHIPMENTS: `${API_CONFIG.BASE_URL}/api/patient/shipments`,
+}

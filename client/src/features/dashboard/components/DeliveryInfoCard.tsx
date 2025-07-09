@@ -14,6 +14,7 @@ export const DeliveryInfoCard: React.FC<DeliveryInfoCardProps> = ({
     nextDeliveryDate,
     remainingMedication,
 }) => {
+    console.log('nextDeliveryDate', remainingMedication)
     return (
         <View className="bg-white mx-6 my-4 gap-4">
             <CustomHeader
@@ -30,6 +31,7 @@ export const DeliveryInfoCard: React.FC<DeliveryInfoCardProps> = ({
                 doctorImage={IMAGES.DOCTOR_SECOND}
                 doctorSpecialization="Cardiologist"
                 status={false}
+                remainingMedication={remainingMedication}
                 onPress={() => {}}
             />
         </View>
