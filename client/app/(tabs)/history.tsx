@@ -1,3 +1,3 @@
-import HistoryScreen from '@/features/history/screens/HistoryScreen'
+import ShipmentScreen from '@/src/features/shipment/screens/ShipmentScreen'
 
-export default HistoryScreen
+export default ShipmentScreen
